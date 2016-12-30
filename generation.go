@@ -24,8 +24,8 @@ func (sc *society) generation() {
 				/*
 					We are intented to make all result from our experiment stable and reproduceable
 					By sorting result by genid before sorting with Fitness,
-					We have elimated the uncertainty introduced by append result to newMember array
-					without order(which= come with race).
+					We have elimated the uncertainty introduced by appending result to newMember array
+					without order(which come with race).
 
 					The compution cost in sorting is barely noticeable.
 				*/
