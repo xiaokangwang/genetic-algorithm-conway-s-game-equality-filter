@@ -6,40 +6,40 @@ import (
 )
 
 type MutationArg struct {
-	minor     miniorMutationArg
-	major     majorMutationArg
-	majorRate float64
+	Mminor     MiniorMutationArg
+	Mmajor     MajorMutationArg
+	MmajorRate float64
 }
 
-type miniorMutationArg struct {
-	filp float64
-	posi float64
-	nega float64
+type MiniorMutationArg struct {
+	Filp float64
+	Posi float64
+	Nega float64
 }
 
-type majorMutationArg struct {
-	filp float64
-	posi float64
-	nega float64
+type MajorMutationArg struct {
+	Filp float64
+	Posi float64
+	Nega float64
 }
 
 func (cz *citizen) mutation() {
-	sims := cz.BelongTo.simarg.seed
-	rands := getPGSourceRand(sims + string(cz.BelongTo.Generation) + cz.getID() + string(cz.BelongTo.reproduceArg.creationSerial))
+	sims := cz.belongTo.Ssimarg.Seed
+	rands := getPGSourceRand(sims + string(cz.belongTo.Generation) + cz.getID() + string(cz.belongTo.RreproduceArg.CreationSerial))
 	multype := rands.Float64() + 0.5
-	isminior := multype > cz.BelongTo.mutationArg.majorRate
+	isminior := multype > cz.belongTo.MmutationArg.MmajorRate
 	if isminior {
-		cz.mutationFPNR(rands, cz.BelongTo.mutationArg.minor.filp, cz.BelongTo.mutationArg.minor.posi, cz.BelongTo.mutationArg.minor.nega)
+		cz.mutationFPNR(rands, cz.belongTo.MmutationArg.Mminor.Filp, cz.belongTo.MmutationArg.Mminor.Posi, cz.belongTo.MmutationArg.Mminor.Nega)
 	} else {
-		cz.mutationFPNR(rands, cz.BelongTo.mutationArg.major.filp, cz.BelongTo.mutationArg.major.posi, cz.BelongTo.mutationArg.major.nega)
+		cz.mutationFPNR(rands, cz.belongTo.MmutationArg.Mmajor.Filp, cz.belongTo.MmutationArg.Mmajor.Posi, cz.belongTo.MmutationArg.Mmajor.Nega)
 	}
-	fmt.Printf("mutation %v %v %v\n", cz.getID(), isminior, cz.BelongTo.reproduceArg.creationSerial)
-	cz.BelongTo.reproduceArg.creationSerial++
+	fmt.Printf("mutation %v %v %v\n", cz.getID(), isminior, cz.belongTo.RreproduceArg.CreationSerial)
+	cz.belongTo.RreproduceArg.CreationSerial++
 }
 
 func (cz *citizen) mutationFPNR(rand *rand.Rand, filp float64, posi float64, nega float64) {
 	var fcount, pcount, ncount, rcount int
-	bnece := cz.BelongTo.Fitnesscalcarg.bph * cz.BelongTo.Fitnesscalcarg.bpw
+	bnece := cz.belongTo.Fitnesscalcarg.Bph * cz.belongTo.Fitnesscalcarg.Bpw
 	for cub := 0; cub < bnece; cub++ {
 		r := rand.Float64() + 0.5
 		if r < filp {

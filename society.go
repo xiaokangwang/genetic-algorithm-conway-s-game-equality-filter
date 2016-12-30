@@ -17,33 +17,32 @@ type society struct {
 	Equality       float64
 	Genesisarg     *genesisArg
 	Fitnesscalcarg *fitnessCalcArg
-	simarg         *SimGlobalArg
-	mutationArg    *MutationArg
-	reproduceArg   *ReproduceArg
+	Ssimarg        *SimGlobalArg
+	MmutationArg   *MutationArg
+	RreproduceArg  *ReproduceArg
 }
 
 type citizen struct {
-	BelongTo *society
+	belongTo *society
 	Gene     *big.Int
 	Fitness  int
-	Parent   string
 }
 
 const fitnesso = "fitness %v %v\n"
 
 func (ctz *citizen) getFitness() int {
 	if ctz.Fitness == notCalc {
-		ctz.Fitness = getFitness(ctz.Gene, ctz.BelongTo.Fitnesscalcarg)
+		ctz.Fitness = getFitness(ctz.Gene, ctz.belongTo.Fitnesscalcarg)
 	}
 	fmt.Printf(fitnesso, ctz.getID(), ctz.Fitness)
 	return ctz.Fitness
 }
 
-const tr = "trace/%v-%v"
+const tr = "checkpoint/%v/%v-%v"
 
 func (ctz *citizen) getTrace() int {
-	filename := fmt.Sprintf(tr, ctz.BelongTo.Generation, ctz.getID())
-	ctz.Fitness = getFitnessTrace(ctz.Gene, ctz.BelongTo.Fitnesscalcarg, filename)
+	filename := fmt.Sprintf(tr, ctz.belongTo.Ssimarg.Seed, ctz.belongTo.Generation, ctz.getID())
+	ctz.Fitness = getFitnessTrace(ctz.Gene, ctz.belongTo.Fitnesscalcarg, filename)
 
 	return ctz.Fitness
 }
@@ -62,23 +61,23 @@ func (sc *society) outputMember() {
 
 func (sc *society) outputmeta() {
 	s := sc
-	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.bph", s.Fitnesscalcarg.bph)
-	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.bpw", s.Fitnesscalcarg.bpw)
-	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.height", s.Fitnesscalcarg.height)
-	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.width", s.Fitnesscalcarg.width)
-	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.step", s.Fitnesscalcarg.step)
-	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.offseth", s.Fitnesscalcarg.offseth)
-	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.offsetw", s.Fitnesscalcarg.offsetw)
-	fmt.Printf("Metadata %v %v\n", "Genesisarg.initialPopulation", s.Genesisarg.initialPopulation)
-	fmt.Printf("Metadata %v %v\n", "Genesisarg.density", s.Genesisarg.density)
-	fmt.Printf("Metadata %v %v\n", "mutationArg.major.filp", s.mutationArg.major.filp)
-	fmt.Printf("Metadata %v %v\n", "mutationArg.major.nega", s.mutationArg.major.nega)
-	fmt.Printf("Metadata %v %v\n", "mutationArg.major.posi", s.mutationArg.major.posi)
-	fmt.Printf("Metadata %v %v\n", "mutationArg.minor.filp", s.mutationArg.minor.filp)
-	fmt.Printf("Metadata %v %v\n", "mutationArg.minor.nega", s.mutationArg.minor.nega)
-	fmt.Printf("Metadata %v %v\n", "mutationArg.minor.posi", s.mutationArg.minor.posi)
-	fmt.Printf("Metadata %v %v\n", "mutationArg.majorRate", s.mutationArg.majorRate)
-	fmt.Printf("Metadata %v %v\n", "simarg.seed", s.simarg.seed)
+	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.bph", s.Fitnesscalcarg.Bph)
+	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.bpw", s.Fitnesscalcarg.Bpw)
+	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.height", s.Fitnesscalcarg.Height)
+	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.width", s.Fitnesscalcarg.Width)
+	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.step", s.Fitnesscalcarg.Step)
+	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.offseth", s.Fitnesscalcarg.Offseth)
+	fmt.Printf("Metadata %v %v\n", "Fitnesscalcarg.offsetw", s.Fitnesscalcarg.Offsetw)
+	fmt.Printf("Metadata %v %v\n", "Genesisarg.initialPopulation", s.Genesisarg.InitialPopulation)
+	fmt.Printf("Metadata %v %v\n", "Genesisarg.density", s.Genesisarg.Density)
+	fmt.Printf("Metadata %v %v\n", "mutationArg.major.filp", s.MmutationArg.Mmajor.Filp)
+	fmt.Printf("Metadata %v %v\n", "mutationArg.major.nega", s.MmutationArg.Mmajor.Nega)
+	fmt.Printf("Metadata %v %v\n", "mutationArg.major.posi", s.MmutationArg.Mmajor.Posi)
+	fmt.Printf("Metadata %v %v\n", "mutationArg.minor.filp", s.MmutationArg.Mminor.Filp)
+	fmt.Printf("Metadata %v %v\n", "mutationArg.minor.nega", s.MmutationArg.Mminor.Nega)
+	fmt.Printf("Metadata %v %v\n", "mutationArg.minor.posi", s.MmutationArg.Mminor.Posi)
+	fmt.Printf("Metadata %v %v\n", "mutationArg.majorRate", s.MmutationArg.MmajorRate)
+	fmt.Printf("Metadata %v %v\n", "simarg.seed", s.Ssimarg.Seed)
 	fmt.Printf("Metadata %v %v\n", "Equality", s.Equality)
 	fmt.Printf("Metadata %v %v\n", "Ver", 1)
 }
@@ -105,7 +104,7 @@ func (sc *society) calcAdjustmentFactor() {
 	for rank := range sc.Members {
 		scoreAccu = calcScore(sc.Equality, float64(count), float64(rank))
 	}
-	sc.reproduceArg.adjustmentFactor = (1 / scoreAccu) / (float64(count) / float64(sc.Genesisarg.initialPopulation))
+	sc.RreproduceArg.AdjustmentFactor = (1 / scoreAccu) / (float64(count) / float64(sc.Genesisarg.InitialPopulation))
 }
 
 type societySorterByFitness struct {
