@@ -21,8 +21,16 @@ func (sc *society) generation() {
 			go func(isFirstChildCurrent bool, CreationSeriaL int, syncs *sync.WaitGroup, czn *citizen, ml *sync.Mutex, index int) {
 				cz := czn.ReproduceOnce(isFirstChildCurrent, CreationSeriaL)
 				fmt.Printf("parent %v -> %v\n", cz.getID(), czn.getID())
-				ml.Lock()
+				/*
+					We are intented to make all result from our experiment stable and reproduceable
+					By sorting result by genid before sorting with Fitness,
+					We have elimated the uncertainty introduced by append result to newMember array
+					without order(which= come with race).
+
+					The compution cost in sorting is barely noticeable.
+				*/
 				cz.genid = index
+				ml.Lock()
 				newMember = append(newMember, cz)
 				ml.Unlock()
 				sy.Done()
