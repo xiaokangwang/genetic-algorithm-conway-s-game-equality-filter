@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"math/big"
 	"sort"
-
-	"github.com/davecgh/go-spew/spew"
+	"sync"
 
 	"golang.org/x/crypto/sha3"
 )
@@ -26,6 +25,7 @@ type citizen struct {
 	belongTo *society
 	Gene     *big.Int
 	Fitness  int
+	genid    int
 }
 
 const fitnesso = "fitness %v %v\n"
@@ -79,23 +79,39 @@ func (sc *society) outputmeta() {
 	fmt.Printf("Metadata %v %v\n", "mutationArg.majorRate", s.MmutationArg.MmajorRate)
 	fmt.Printf("Metadata %v %v\n", "simarg.seed", s.Ssimarg.Seed)
 	fmt.Printf("Metadata %v %v\n", "Equality", s.Equality)
-	fmt.Printf("Metadata %v %v\n", "Ver", 1)
+	fmt.Printf("Metadata %v %v\n", "Ver", 2)
+}
+
+func (sc *society) calcMemberFitness() {
+	sy := &sync.WaitGroup{}
+	for _, mem := range sc.Members {
+		sy.Add(1)
+		go func(ctzcalc *citizen, sy *sync.WaitGroup) {
+			ctzcalc.getFitness()
+			sy.Done()
+		}(mem, sy)
+	}
+	sy.Wait()
 }
 
 func (sc *society) sortCitizen() {
+	//calcFitness
+	sc.calcMemberFitness()
+	spct := &societySorterGenid{toSort: sc}
+	sort.Sort(spct)
 	sct := &societySorterByFitness{toSort: sc}
-
-	fmt.Println(debugTraceStart)
-	fmt.Println("Sort Before")
-	spew.Dump(sct)
-	fmt.Println(debugTraceEnd)
+	/*
+		fmt.Println(debugTraceStart)
+		fmt.Println("Sort Before")
+		spew.Dump(sct)
+		fmt.Println(debugTraceEnd)*/
 
 	sort.Sort(sort.Reverse(sct))
-
-	fmt.Println(debugTraceStart)
-	fmt.Println("Sort After")
-	spew.Dump(sct)
-	fmt.Println(debugTraceEnd)
+	/*
+		fmt.Println(debugTraceStart)
+		fmt.Println("Sort After")
+		spew.Dump(sct)
+		fmt.Println(debugTraceEnd)*/
 }
 
 func (sc *society) calcAdjustmentFactor() {
@@ -123,4 +139,22 @@ func (sc *societySorterByFitness) Swap(i, j int) {
 
 func (sc *societySorterByFitness) Less(i, j int) bool {
 	return (*sc.toSort.Members[i]).getFitness() < (*sc.toSort.Members[j]).getFitness()
+}
+
+type societySorterGenid struct {
+	toSort *society
+}
+
+func (sc *societySorterGenid) Len() int {
+	return len(sc.toSort.Members)
+}
+
+func (sc *societySorterGenid) Swap(i, j int) {
+	t := sc.toSort.Members[i]
+	sc.toSort.Members[i] = sc.toSort.Members[j]
+	sc.toSort.Members[j] = t
+}
+
+func (sc *societySorterGenid) Less(i, j int) bool {
+	return (*sc.toSort.Members[i]).genid < (*sc.toSort.Members[j]).genid
 }

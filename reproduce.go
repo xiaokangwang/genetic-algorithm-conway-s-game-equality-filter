@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math"
 	"math/big"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 type ReproduceArg struct {
@@ -34,24 +32,29 @@ func calcScore(Equality, count, rank float64) float64 {
 	return probirep
 }
 
-func (ctz *citizen) ReproduceOnce() *citizen {
+func (ctz *citizen) ReproduceOnce(firstChild bool, serial int) *citizen {
 	cuCtz := &citizen{}
 	*cuCtz = *ctz
 
 	cuCtz.Gene = big.NewInt(0)
 	cuCtz.Gene.Set(ctz.Gene)
 
-	fmt.Println(debugTraceStart)
-	fmt.Println("mutation Before")
-	spew.Dump(cuCtz.getID())
-	fmt.Println(debugTraceEnd)
+	/*
+		fmt.Println(debugTraceStart)
+		fmt.Println("mutation Before")
+		spew.Dump(cuCtz.getID())
+		fmt.Println(debugTraceEnd)
+	*/
 
-	cuCtz.mutation()
+	if !firstChild {
+		cuCtz.mutation(serial)
+	}
 
-	fmt.Println(debugTraceStart)
-	fmt.Println("mutation After")
-	spew.Dump(cuCtz.getID())
-	fmt.Println(debugTraceEnd)
-
+	/*
+		fmt.Println(debugTraceStart)
+		fmt.Println("mutation After")
+		spew.Dump(cuCtz.getID())
+		fmt.Println(debugTraceEnd)
+	*/
 	return cuCtz
 }

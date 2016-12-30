@@ -23,9 +23,9 @@ type MajorMutationArg struct {
 	Nega float64
 }
 
-func (cz *citizen) mutation() {
+func (cz *citizen) mutation(serial int) {
 	sims := cz.belongTo.Ssimarg.Seed
-	rands := getPGSourceRand(sims + string(cz.belongTo.Generation) + cz.getID() + string(cz.belongTo.RreproduceArg.CreationSerial))
+	rands := getPGSourceRand(sims + string(cz.belongTo.Generation) + cz.getID() + string(serial))
 	multype := rands.Float64() + 0.5
 	isminior := multype > cz.belongTo.MmutationArg.MmajorRate
 	if isminior {
@@ -33,8 +33,7 @@ func (cz *citizen) mutation() {
 	} else {
 		cz.mutationFPNR(rands, cz.belongTo.MmutationArg.Mmajor.Filp, cz.belongTo.MmutationArg.Mmajor.Posi, cz.belongTo.MmutationArg.Mmajor.Nega)
 	}
-	fmt.Printf("mutation %v %v %v\n", cz.getID(), isminior, cz.belongTo.RreproduceArg.CreationSerial)
-	cz.belongTo.RreproduceArg.CreationSerial++
+	fmt.Printf("mutationO %v %v %v\n", cz.getID(), isminior, serial)
 }
 
 func (cz *citizen) mutationFPNR(rand *rand.Rand, filp float64, posi float64, nega float64) {
