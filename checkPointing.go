@@ -8,7 +8,7 @@ import (
 
 func (sc *society) CheckPoint() {
 	detailfoldername := fmt.Sprintf("checkpoint/%v/%v/", sc.Ssimarg.Seed, sc.Generation)
-	_ := os.MkdirAll(detailfoldername, 0777)
+	_ = os.MkdirAll(detailfoldername, 0777)
 	/*
 		fmt.Println(debugTraceStart)
 		fmt.Println("Checkpoint cp")
