@@ -11,6 +11,7 @@ import (
 func Restore(seedname string, maxgen int) {
 	s := &society{}
 	s.Restore(seedname)
+	s.outputmeta()
 	if s.Ssimarg.Seed != seedname {
 		panic("Seed not match")
 	}

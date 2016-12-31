@@ -77,9 +77,10 @@ func (sc *society) outputmeta() {
 	fmt.Printf("Metadata %v %v\n", "mutationArg.minor.nega", s.MmutationArg.Mminor.Nega)
 	fmt.Printf("Metadata %v %v\n", "mutationArg.minor.posi", s.MmutationArg.Mminor.Posi)
 	fmt.Printf("Metadata %v %v\n", "mutationArg.majorRate", s.MmutationArg.MmajorRate)
+	fmt.Printf("Metadata %v %v\n", "ReproduceArg.LuckyFactor", s.RreproduceArg.LuckyFactor)
 	fmt.Printf("Metadata %v %v\n", "simarg.seed", s.Ssimarg.Seed)
 	fmt.Printf("Metadata %v %v\n", "Equality", s.Equality)
-	fmt.Printf("Metadata %v %v\n", "Ver", 2)
+	fmt.Printf("Metadata %v %v\n", "Ver", 3)
 }
 
 func (sc *society) calcMemberFitness() {

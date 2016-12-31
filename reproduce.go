@@ -9,6 +9,7 @@ import (
 type ReproduceArg struct {
 	AdjustmentFactor float64
 	CreationSerial   int
+	LuckyFactor      *float64
 }
 
 func round(f float64) float64 {
@@ -20,7 +21,7 @@ func (ctz *citizen) ReproduceCount(rank int) int {
 	probirep := calcScore(ctz.belongTo.Equality, float64(count), float64(rank)) * ctz.belongTo.RreproduceArg.AdjustmentFactor
 	sims := ctz.belongTo.Ssimarg.Seed
 	rands := getPGSourceRand(sims + string(ctz.belongTo.Generation) + ctz.getID() + "rep")
-	r := math.Abs(rands.NormFloat64()) + 1
+	r := math.Abs(rands.NormFloat64()**ctz.belongTo.RreproduceArg.LuckyFactor) + 1
 	co := probirep / r
 	fmt.Printf("rep %v / %v %v %v %v %v\n", probirep, r, co, rank, ctz.getID(), ctz.getFitness())
 	return int(round(co))

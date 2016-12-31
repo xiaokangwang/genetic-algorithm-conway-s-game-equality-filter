@@ -76,4 +76,8 @@ func (sc *society) Restore(seedname string) {
 			mem.belongTo = sc
 		}
 	}
+	if sc.RreproduceArg.LuckyFactor == nil {
+		sc.RreproduceArg.LuckyFactor = new(float64)
+		*sc.RreproduceArg.LuckyFactor = 1.0
+	}
 }
