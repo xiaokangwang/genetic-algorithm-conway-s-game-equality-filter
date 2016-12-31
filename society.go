@@ -80,7 +80,7 @@ func (sc *society) outputmeta() {
 	fmt.Printf("Metadata %v %v\n", "ReproduceArg.LuckyFactor", s.RreproduceArg.LuckyFactor)
 	fmt.Printf("Metadata %v %v\n", "simarg.seed", s.Ssimarg.Seed)
 	fmt.Printf("Metadata %v %v\n", "Equality", s.Equality)
-	fmt.Printf("Metadata %v %v\n", "Ver", 3)
+	fmt.Printf("Metadata %v %v\n", "Ver", 4)
 }
 
 func (sc *society) calcMemberFitness() {
@@ -99,7 +99,7 @@ func (sc *society) sortCitizen() {
 	//calcFitness
 	sc.calcMemberFitness()
 	spct := &societySorterGenid{toSort: sc}
-	sort.Sort(spct)
+	sort.Stable(sort.Reverse(spct))
 	sct := &societySorterByFitness{toSort: sc}
 	/*
 		fmt.Println(debugTraceStart)
@@ -107,7 +107,7 @@ func (sc *society) sortCitizen() {
 		spew.Dump(sct)
 		fmt.Println(debugTraceEnd)*/
 
-	sort.Sort(sort.Reverse(sct))
+	sort.Stable(sort.Reverse(sct))
 	/*
 		fmt.Println(debugTraceStart)
 		fmt.Println("Sort After")
