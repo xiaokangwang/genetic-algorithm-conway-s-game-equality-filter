@@ -99,7 +99,7 @@ func (sc *society) sortCitizen() {
 	//calcFitness
 	sc.calcMemberFitness()
 	spct := &societySorterGenid{toSort: sc}
-	sort.Stable(sort.Reverse(spct))
+	sort.Sort(sort.Reverse(spct))
 	sct := &societySorterByFitness{toSort: sc}
 	/*
 		fmt.Println(debugTraceStart)
